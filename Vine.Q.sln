@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vine.Q", "src\Vine.Q\Vine.Q.csproj", "{6B8283DA-3D76-48D6-B020-2CE1391A4B14}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.App", "src\Sample.App\Sample.App.csproj", "{47A8AAE1-317A-485C-B675-035A225A3D1F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6B8283DA-3D76-48D6-B020-2CE1391A4B14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B8283DA-3D76-48D6-B020-2CE1391A4B14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B8283DA-3D76-48D6-B020-2CE1391A4B14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B8283DA-3D76-48D6-B020-2CE1391A4B14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47A8AAE1-317A-485C-B675-035A225A3D1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47A8AAE1-317A-485C-B675-035A225A3D1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47A8AAE1-317A-485C-B675-035A225A3D1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47A8AAE1-317A-485C-B675-035A225A3D1F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BF26658B-940D-4269-B980-398818D622C0}
+	EndGlobalSection
+EndGlobal
