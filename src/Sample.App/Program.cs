@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Vine.Q;
+using System.Linq;
 
 namespace Sample.App;
 
-internal class Program
+internal static class Program
 {
     static void Main(string[] args)
     {
@@ -20,41 +21,50 @@ internal class Program
         var serviceProvider = services.BuildServiceProvider();
         var publisher = serviceProvider.GetRequiredService<IVineQueuePublisher>();
 
-
-        publisher.Publish(new Message { Id = 1.ToString() });
-        publisher.Publish(new Message { Id = 2.ToString() }, "local2");
-        publisher.Publish(new Message { Id = 3.ToString() }, "local3");
-        publisher.Publish(new Message { Id = 4.ToString() }, "local4");
-
-
+        Enumerable.Range(1, 1000_0000).AsParallel().ForAll(idx => {
+            publisher.Publish(new Message { Id = 1.ToString() });
+            publisher.Publish(new Message { Id = 2.ToString() }, "local2");
+            publisher.Publish(new Message { Id = 3.ToString() }, "local3");
+            publisher.Publish(new Message { Id = 4.ToString() }, "local4");
+        });
+        
         Console.ReadKey();
     }
 }
 
-public class Message : IVineQueueHandler
+public class Message
 {
     public string? Id { get; set; }
 }
 
-public class MessageHandler : IVineQueueHandler
+public class MessageHandler : IVineQueueHandlerWithReturn<Message,Task>
 {
+    private readonly string _preCondition;
+
+    public MessageHandler()
+    {
+        _preCondition = "MessageHandler";
+        Console.WriteLine($"MessageHandler constrcut.");
+    }
+
     public async Task Handle(Message message)
     {
-        Console.WriteLine($"[1] - Consume message : {message.Id}");
+        message.Id = _preCondition;
+        Console.WriteLine($"[1] Consume message : {message.Id}");
         await Task.FromResult(0);
     }
 }
 
-public class MessageHandler2 : IVineQueueHandler
+public class MessageHandler2 : IVineQueueHandlerWithReturn<Message, Task>
 {
     public async Task Handle(Message message)
     {
         Console.WriteLine($"[2] Consume message : {message.Id}");
-        await Task.FromResult(0);
+        await Task.CompletedTask;
     }
 }
 
-public class MessageHandler3 : IVineQueueHandler
+public class MessageHandler3 : IVineQueueHandler<Message>
 {
     public void Handle(Message message)
     {
@@ -62,11 +72,11 @@ public class MessageHandler3 : IVineQueueHandler
     }
 }
 
-public class MessageHandler4 : IVineQueueHandler
+public class MessageHandler4 : IVineQueueHandlerWithReturn<Message, Task>
 {
     public async Task Handle(Message message)
     {
-        await Task.Delay(2000);
         Console.WriteLine($"[4] Consume message : {message.Id}");
+        await Task.CompletedTask;
     }
 }
