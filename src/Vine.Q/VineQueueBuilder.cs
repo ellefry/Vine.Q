@@ -5,7 +5,7 @@ namespace Vine.Q;
 
 public class VineQueueBuilder : IVineQueueBuilder, IVineWorkQueueAcquirer
 {
-    private static readonly ConcurrentDictionary<string, IVineWorkQueue> _dictionary = [];
+    private static readonly ConcurrentDictionary<string, IVineWorkQueue> _dictionary = new();
 
     public static VineWorkQueue<T> Create<T>(string name, int capacity)
     {

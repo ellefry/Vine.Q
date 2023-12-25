@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Vine.Q;
 
-public static class ServicesExtensions
+public static class ServiceExtensions
 {
     /// <summary>
     /// Add default queue name equals local and capacity equals DEFAULT_CAPACITY(2000) and the handler without return type 
@@ -81,12 +81,10 @@ public static class ServicesExtensions
         return services;
     }
 
-    private static IServiceCollection AddCommons(this IServiceCollection services)
+    private static void AddCommons(this IServiceCollection services)
     {
         services.TryAddSingleton<IVineQueueBuilder, VineQueueBuilder>();
         services.TryAddSingleton<IVineWorkQueueAcquirer, VineQueueBuilder>();
         services.TryAddSingleton<IVineQueuePublisher, VineQueuePublisher>();
-
-        return services;
     }
 }
