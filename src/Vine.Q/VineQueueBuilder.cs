@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 
 namespace Vine.Q;
+
 public class VineQueueBuilder : IVineQueueBuilder, IVineWorkQueueAcquirer
 {
     private static readonly ConcurrentDictionary<string, IVineWorkQueue> _dictionary = [];

@@ -38,8 +38,6 @@ public static class ServicesExtensions
         var handler = sp.GetRequiredKeyedService<IVineQueueHandler<T>>(queue);
         builder.Create<T>(queue, capacity, handler.Handle);
 
-        //var handler = sp.get
-
         return services;
     }
 

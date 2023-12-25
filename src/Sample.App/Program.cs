@@ -11,21 +11,21 @@ internal static class Program
 
         services.AddDefaultVineQueueWithReturn<Message, Task, MessageHandler>();
 
-        services.AddVineQueueWithReturn<Message, Task, MessageHandler2>("local2", 2000);
+        services.AddVineQueueWithReturn<Message, Task, MessageHandler2>("local2", 5_000);
 
-        services.AddVineQueue<Message, MessageHandler3>("local3", int.MaxValue);
+        services.AddVineQueue<Message, MessageHandler3>("local3", 10_0000);
 
-        services.AddVineQueueWithReturn<Message, Task, MessageHandler4>("local4", 2000);
+        services.AddVineQueueWithReturn<Message, Task, MessageHandler4>("local4", 1_0000);
 
         var serviceProvider = services.BuildServiceProvider();
         var publisher = serviceProvider.GetRequiredService<IVineQueuePublisher>();
 
         Enumerable.Range(1, 1000_0000).AsParallel().ForAll(idx =>
         {
-            publisher.Publish(new Message { Id = 1.ToString() });
-            publisher.Publish(new Message { Id = 2.ToString() }, "local2");
-            publisher.Publish(new Message { Id = 3.ToString() }, "local3");
-            publisher.Publish(new Message { Id = 4.ToString() }, "local4");
+            publisher.Publish(new Message { Id = idx.ToString() });
+            publisher.Publish(new Message { Id = idx.ToString() }, "local2");
+            publisher.Publish(new Message { Id = idx.ToString() }, "local3");
+            publisher.Publish(new Message { Id = idx.ToString() }, "local4");
         });
 
         Console.ReadKey();
@@ -42,7 +42,7 @@ public class MessageHandler : IVineQueueHandlerWithReturn<Message, Task>
     public async Task Handle(Message message)
     {
         Console.WriteLine($"[1] Consume message : {message.Id}");
-        await Task.FromResult(0);
+        await Task.CompletedTask;
     }
 }
 
