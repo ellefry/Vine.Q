@@ -26,6 +26,24 @@ public class MessageHandler : IVineQueueHandlerWithReturn<Message, Task>
 services.AddVineQueueWithReturn<Message, Task, MessageHandler>("local", 5_000);
 ```
 > **local** means queue name and **5_000** mean queue size
+
+* Inject publish service
+```
+private readonly IVineQueuePublisher _publisher
+
+public Constructor(IVineQueuePublisher publisher)
+{
+    _publisher = publisher;
+    ...
+}
+
+public async Task PublishMessage()
+{
+    ...
+    _publisher.Publish(new Message { Id = "demo" });
+    ...
+}
+```
 ## Limitations
 * MessageHandler will be registered as singleton service, so if you are using other services in the handler, please make sure the services can be injected.
 * 1 queue 1 handler
