@@ -40,7 +40,7 @@ public Constructor(IVineQueuePublisher publisher)
 public async Task PublishMessage()
 {
     ...
-    _publisher.Publish(new Message { Id = "demo" });
+    _publisher.Publish(new Message { Id = "demo" },"local");
     ...
 }
 ```
