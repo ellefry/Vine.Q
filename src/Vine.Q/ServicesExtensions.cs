@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+
 namespace Vine.Q;
 
 public static class ServicesExtensions
@@ -71,8 +72,8 @@ public static class ServicesExtensions
         where THandler : class, IVineQueueHandlerWithReturn<T, TReturn>
     {
         services.AddCommons();
-
         services.TryAddKeyedSingleton<IVineQueueHandlerWithReturn<T, TReturn>, THandler>(queue);
+
         var sp = services.BuildServiceProvider();
         var builder = sp.GetRequiredService<IVineQueueBuilder>();
 
@@ -90,6 +91,4 @@ public static class ServicesExtensions
 
         return services;
     }
-
-
 }
