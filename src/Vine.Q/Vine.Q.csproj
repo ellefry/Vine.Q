@@ -4,7 +4,13 @@
     <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>Message Queue Memory</PackageTags>
+    <Title>A lightweight memory message queue</Title>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/ellefry/Vine.Q</PackageProjectUrl>
+    <PackageVersion>1.0.0</PackageVersion>
+    <PackageIconUrl>../../queue-logo.png</PackageIconUrl>
   </PropertyGroup>
 
   <ItemGroup>
