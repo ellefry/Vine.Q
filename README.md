@@ -1,2 +1,2 @@
 # Vine.Q
-Light memory queue
+A light weight memory queue
