@@ -5,12 +5,15 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageTags>Message Queue Memory</PackageTags>
-    <Title>A lightweight memory message queue</Title>
+    <PackageTags>Memory Message Queue</PackageTags>
+    <Title>Memory message queue</Title>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageProjectUrl>https://github.com/ellefry/Vine.Q</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/ellefry/Vine.Q/blob/main/README.md</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ellefry/Vine.Q</RepositoryUrl>
     <PackageVersion>1.0.0</PackageVersion>
     <PackageIconUrl>../../queue-logo.png</PackageIconUrl>
+    <Copyright>Copyright (c) Ellefry 2023.</Copyright>
+    <Description>A lightweight memory message queue</Description>
   </PropertyGroup>
 
   <ItemGroup>
