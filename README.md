@@ -1,4 +1,4 @@
-![Static Badge](https://img.shields.io/badge/nuget-1.0.0-blue)(https://www.nuget.org/packages/Vine.Q/) [![Downloads](https://img.shields.io/badge/download-8A2BE2)](https://www.nuget.org/packages/Vine.Q/)
+[![Static Badge](https://img.shields.io/badge/nuget-1.0.0-blue)](https://www.nuget.org/packages/Vine.Q/) [![Downloads](https://img.shields.io/badge/download-8A2BE2)](https://www.nuget.org/packages/Vine.Q/)
 # Vine.Q
 ## A Lightweight Memory Message Queue
 Vine.Q is an implementation of a lightweight memory message queue in C#. It serves as an efficient and easy-to-use mechanism for managing and processing queued data within a C# application. This queue implementation is designed to be lightweight, making it suitable for scenarios where a simple and fast in-memory queue is needed. Vine.Q enables developers to seamlessly handle and organize data in a first-in, first-out (FIFO) fashion, providing a reliable solution for various queuing requirements within C# applications.
