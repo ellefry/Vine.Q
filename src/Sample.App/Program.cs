@@ -20,7 +20,7 @@ internal static class Program
         var serviceProvider = services.BuildServiceProvider();
         var publisher = serviceProvider.GetRequiredService<IVineQueuePublisher>();
 
-        Enumerable.Range(1, 1000_0000).AsParallel().ForAll(idx =>
+        Enumerable.Range(1, 10).AsParallel().ForAll(idx =>
         {
             publisher.Publish(new Message { Id = idx.ToString() });
             publisher.Publish(new Message { Id = idx.ToString() }, "local2");

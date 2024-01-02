@@ -30,11 +30,19 @@ public static class ServiceExtensions
         where THandler : class, IVineQueueHandler<T>
     {
         services.AddCommons();
+#if NET8_0_OR_GREATER
         services.TryAddKeyedSingleton<IVineQueueHandler<T>, THandler>(queue);
-
-        services.AddSingleton(sp => {
+#else
+        services.AddSingleton<THandler>();
+#endif
+        services.AddSingleton(sp =>
+        {
             var builder = sp.GetRequiredService<IVineQueueBuilder>();
+#if NET8_0_OR_GREATER
             var handler = sp.GetRequiredKeyedService<IVineQueueHandler<T>>(queue);
+#else
+            var handler = sp.GetRequiredService<THandler>() as IVineQueueHandler<T>;
+#endif
             var q = builder.Create<T>(queue, capacity, handler.Handle);
             return q;
         });
@@ -71,11 +79,19 @@ public static class ServiceExtensions
         where THandler : class, IVineQueueHandlerWithReturn<T, TReturn>
     {
         services.AddCommons();
+#if NET8_0_OR_GREATER
         services.TryAddKeyedSingleton<IVineQueueHandlerWithReturn<T, TReturn>, THandler>(queue);
-
-        services.AddSingleton(sp => {
+#else
+        services.AddSingleton<THandler>();
+#endif
+        services.AddSingleton(sp =>
+        {
             var builder = sp.GetRequiredService<IVineQueueBuilder>();
+#if NET8_0_OR_GREATER
             var handler = sp.GetRequiredKeyedService<IVineQueueHandlerWithReturn<T, TReturn>>(queue);
+#else
+            var handler = sp.GetRequiredService<THandler>() as IVineQueueHandlerWithReturn<T, TReturn>;
+#endif
             var q = builder.Create<T, TReturn>(queue, capacity, handler.Handle);
             return q;
         });
