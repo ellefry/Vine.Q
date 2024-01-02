@@ -32,11 +32,12 @@ public static class ServiceExtensions
         services.AddCommons();
         services.TryAddKeyedSingleton<IVineQueueHandler<T>, THandler>(queue);
 
-        var sp = services.BuildServiceProvider();
-        var builder = sp.GetRequiredService<IVineQueueBuilder>();
-
-        var handler = sp.GetRequiredKeyedService<IVineQueueHandler<T>>(queue);
-        builder.Create<T>(queue, capacity, handler.Handle);
+        services.AddSingleton(sp => {
+            var builder = sp.GetRequiredService<IVineQueueBuilder>();
+            var handler = sp.GetRequiredKeyedService<IVineQueueHandler<T>>(queue);
+            var q = builder.Create<T>(queue, capacity, handler.Handle);
+            return q;
+        });
 
         return services;
     }
@@ -72,11 +73,12 @@ public static class ServiceExtensions
         services.AddCommons();
         services.TryAddKeyedSingleton<IVineQueueHandlerWithReturn<T, TReturn>, THandler>(queue);
 
-        var sp = services.BuildServiceProvider();
-        var builder = sp.GetRequiredService<IVineQueueBuilder>();
-
-        var handler = sp.GetRequiredKeyedService<IVineQueueHandlerWithReturn<T, TReturn>>(queue);
-        builder.Create<T, TReturn>(queue, capacity, handler.Handle);
+        services.AddSingleton(sp => {
+            var builder = sp.GetRequiredService<IVineQueueBuilder>();
+            var handler = sp.GetRequiredKeyedService<IVineQueueHandlerWithReturn<T, TReturn>>(queue);
+            var q = builder.Create<T, TReturn>(queue, capacity, handler.Handle);
+            return q;
+        });
 
         return services;
     }
@@ -84,7 +86,7 @@ public static class ServiceExtensions
     private static void AddCommons(this IServiceCollection services)
     {
         services.TryAddSingleton<IVineQueueBuilder, VineQueueBuilder>();
-        services.TryAddSingleton<IVineWorkQueueAcquirer, VineQueueBuilder>();
+        services.TryAddSingleton<IVineWorkQueueAcquirer, VineWorkQueueAcquirer>();
         services.TryAddSingleton<IVineQueuePublisher, VineQueuePublisher>();
     }
 }

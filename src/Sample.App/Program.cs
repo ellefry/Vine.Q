@@ -32,6 +32,7 @@ internal static class Program
     }
 }
 
+
 public class Message
 {
     public string? Id { get; set; }
@@ -41,8 +42,7 @@ public class MessageHandler : IVineQueueHandlerWithReturn<Message, Task>
 {
     public async Task Handle(Message message)
     {
-        Console.WriteLine($"[1] Consume message : {message.Id}");
-        await Task.CompletedTask;
+        await Console.Out.WriteLineAsync($"[1] Consume message : {message.Id}");
     }
 }
 
@@ -50,8 +50,7 @@ public class MessageHandler2 : IVineQueueHandlerWithReturn<Message, Task>
 {
     public async Task Handle(Message message)
     {
-        Console.WriteLine($"[2] Consume message : {message.Id}");
-        await Task.CompletedTask;
+        await Console.Out.WriteLineAsync($"[2] Consume message : {message.Id}");
     }
 }
 
@@ -67,7 +66,6 @@ public class MessageHandler4 : IVineQueueHandlerWithReturn<Message, Task>
 {
     public async Task Handle(Message message)
     {
-        Console.WriteLine($"[4] Consume message : {message.Id}");
-        await Task.CompletedTask;
+        await Console.Out.WriteLineAsync($"[4] Consume message : {message.Id}");
     }
 }

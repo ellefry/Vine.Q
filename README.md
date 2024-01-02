@@ -46,6 +46,6 @@ public async Task PublishMessage()
 }
 ```
 ## Limitations
-* MessageHandler will be registered as singleton service, so if you are using other services in the handler, please make sure the services can be injected.
+* MessageHandler will be registered as singleton service
 * 1 queue 1 handler
 * Do not make your queue size too big, e.g. int.MaxValue

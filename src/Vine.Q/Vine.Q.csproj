@@ -10,7 +10,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/ellefry/Vine.Q/blob/main/README.md</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ellefry/Vine.Q</RepositoryUrl>
-    <PackageVersion>1.0.0</PackageVersion>
+    <PackageVersion>1.0.1</PackageVersion>
     <PackageIconUrl>../../queue-logo.png</PackageIconUrl>
     <Copyright>Copyright (c) Ellefry 2023.</Copyright>
     <Description>A lightweight memory message queue</Description>
