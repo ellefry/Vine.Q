@@ -4,7 +4,7 @@ public class VineQueuePublisher : IVineQueuePublisher
 {
     private readonly IVineWorkQueueAcquirer _queueAcquirer;
 
-    public VineQueuePublisher(IVineWorkQueueAcquirer queueAcquirer, IVineWorkQueue queueInstance)
+    public VineQueuePublisher(IVineWorkQueueAcquirer queueAcquirer)
     {
         _queueAcquirer = queueAcquirer;
     }
