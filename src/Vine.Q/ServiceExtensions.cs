@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Vine.Q;
@@ -11,10 +13,10 @@ public static class ServiceExtensions
     /// <typeparam name="T">Message type, parameter of a handler</typeparam>
     /// <typeparam name="THandler">Implementation of a handler</typeparam>
     /// <returns>IServiceCollection</returns>
-    public static IServiceCollection AddDefaultVineQueue<T, THandler>(this IServiceCollection services)
+    public static IServiceCollection AddDefaultVineQueue<T, THandler>(this IServiceCollection services, VineQueueOptions<T>? options = null)
         where THandler : class, IVineQueueHandler<T>
     {
-        services.AddVineQueue<T, THandler>(Constants.DEFAULT_QUEUE, Constants.DEFAULT_QUEUE_SIZE);
+        services.AddVineQueue<T, THandler>(Constants.DEFAULT_QUEUE, Constants.DEFAULT_QUEUE_SIZE, options);
         return services;
     }
 
@@ -26,9 +28,10 @@ public static class ServiceExtensions
     /// <param name="queue">Queue name</param>
     /// <param name="capacity">Queue capacity</param>
     /// <returns></returns>
-    public static IServiceCollection AddVineQueue<T, THandler>(this IServiceCollection services, string queue, int capacity)
+    public static IServiceCollection AddVineQueue<T, THandler>(this IServiceCollection services, string queue, int capacity, VineQueueOptions<T>? options = null)
         where THandler : class, IVineQueueHandler<T>
     {
+        ValidateAndRegisterQueue<T>(services, queue, capacity);
         services.AddCommons();
 #if NET8_0_OR_GREATER
         services.TryAddKeyedSingleton<IVineQueueHandler<T>, THandler>(queue);
@@ -43,7 +46,7 @@ public static class ServiceExtensions
 #else
             var handler = sp.GetRequiredService<THandler>() as IVineQueueHandler<T>;
 #endif
-            var q = builder.Create<T>(queue, capacity, handler.Handle);
+            var q = builder.Create<T>(queue, capacity, options ?? new VineQueueOptions<T>(), handler.Handle);
             return q;
         });
 
@@ -59,10 +62,10 @@ public static class ServiceExtensions
     /// <param name="queue">Queue name</param>
     /// <param name="capacity">Queue capacity</param>
     /// <returns>IServiceCollection</returns>
-    public static IServiceCollection AddDefaultVineQueueWithReturn<T, TReturn, THandler>(this IServiceCollection services)
+    public static IServiceCollection AddDefaultVineQueueWithReturn<T, TReturn, THandler>(this IServiceCollection services, VineQueueOptions<T>? options = null)
         where THandler : class, IVineQueueHandlerWithReturn<T, TReturn>
     {
-        services.AddVineQueueWithReturn<T, TReturn, THandler>(Constants.DEFAULT_QUEUE, Constants.DEFAULT_QUEUE_SIZE);
+        services.AddVineQueueWithReturn<T, TReturn, THandler>(Constants.DEFAULT_QUEUE, Constants.DEFAULT_QUEUE_SIZE, options);
         return services;
     }
 
@@ -75,9 +78,10 @@ public static class ServiceExtensions
     /// <param name="queue">Queue name</param>
     /// <param name="capacity">Queue capacity</param>
     /// <returns>IServiceCollection</returns>
-    public static IServiceCollection AddVineQueueWithReturn<T, TReturn, THandler>(this IServiceCollection services, string queue, int capacity)
+    public static IServiceCollection AddVineQueueWithReturn<T, TReturn, THandler>(this IServiceCollection services, string queue, int capacity, VineQueueOptions<T>? options = null)
         where THandler : class, IVineQueueHandlerWithReturn<T, TReturn>
     {
+        ValidateAndRegisterQueue<T>(services, queue, capacity);
         services.AddCommons();
 #if NET8_0_OR_GREATER
         services.TryAddKeyedSingleton<IVineQueueHandlerWithReturn<T, TReturn>, THandler>(queue);
@@ -92,7 +96,7 @@ public static class ServiceExtensions
 #else
             var handler = sp.GetRequiredService<THandler>() as IVineQueueHandlerWithReturn<T, TReturn>;
 #endif
-            var q = builder.Create<T, TReturn>(queue, capacity, handler.Handle);
+            var q = builder.Create<T, TReturn>(queue, capacity, options ?? new VineQueueOptions<T>(), handler.Handle);
             return q;
         });
 
@@ -105,4 +109,40 @@ public static class ServiceExtensions
         services.TryAddSingleton<IVineWorkQueueAcquirer, VineWorkQueueAcquirer>();
         services.TryAddSingleton<IVineQueuePublisher, VineQueuePublisher>();
     }
+
+    private static void ValidateAndRegisterQueue<T>(IServiceCollection services, string queue, int capacity)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        if (string.IsNullOrWhiteSpace(queue))
+        {
+            throw new ArgumentException("Queue name cannot be null or whitespace.", nameof(queue));
+        }
+        if (capacity <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(capacity), "Queue capacity must be greater than zero.");
+        }
+
+        if (services.Any(descriptor =>
+                descriptor.ServiceType == typeof(VineQueueRegistration) &&
+                descriptor.ImplementationInstance is VineQueueRegistration registration &&
+                string.Equals(registration.Name, queue, StringComparison.Ordinal)))
+        {
+            throw new InvalidOperationException($"A Vine.Q queue named '{queue}' is already registered.");
+        }
+
+        services.AddSingleton(new VineQueueRegistration(queue, typeof(T)));
+    }
+}
+
+internal sealed class VineQueueRegistration
+{
+    public VineQueueRegistration(string name, Type messageType)
+    {
+        Name = name;
+        MessageType = messageType;
+    }
+
+    public string Name { get; }
+
+    public Type MessageType { get; }
 }
