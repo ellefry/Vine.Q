@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace Vine.Q;
@@ -15,13 +15,13 @@ public interface IVineWorkQueue
 
 public interface IVineWorkQueue<in T> : IVineWorkQueue
 {
-    void Send(T item);
     Task SendAsync(T item, CancellationToken cancellationToken = default);
+    ValueTask<bool> TrySendAsync(T item);
 }
 
 public class VineWorkQueue<T> : IVineWorkQueue<T>, IDisposable
 {
-    private readonly BlockingCollection<QueuedMessage> _queue;
+    private readonly Channel<QueuedMessage> _queue;
     private readonly VineQueueOptions<T> _options;
     private readonly CancellationTokenSource _stopCts = new();
     private readonly object _startLock = new();
@@ -34,6 +34,7 @@ public class VineWorkQueue<T> : IVineWorkQueue<T>, IDisposable
     private long _successfulMessages;
     private long _failedMessages;
     private long _totalConsumptionLatencyTicks;
+    private long _queuedMessages;
     private Task[]? _workers;
 
     public string Name { get; }
@@ -67,7 +68,13 @@ public class VineWorkQueue<T> : IVineWorkQueue<T>, IDisposable
             throw new ArgumentOutOfRangeException(nameof(options), "RetryDelay cannot be negative.");
         }
 
-        _queue = new BlockingCollection<QueuedMessage>(capacity);
+        _queue = Channel.CreateBounded<QueuedMessage>(new BoundedChannelOptions(capacity)
+        {
+            FullMode = BoundedChannelFullMode.Wait,
+            SingleWriter = false,
+            SingleReader = _options.MaxConcurrency == 1,
+            AllowSynchronousContinuations = false
+        });
         var meter = new Meter("Vine.Q");
         _publishedCounter = meter.CreateCounter<long>("vineq.messages.published");
         _successfulCounter = meter.CreateCounter<long>("vineq.messages.succeeded");
@@ -76,47 +83,47 @@ public class VineWorkQueue<T> : IVineWorkQueue<T>, IDisposable
         _consumptionLatency = meter.CreateHistogram<double>("vineq.message.consumption_latency_ms");
     }
 
-    public void RegisterHandler(Action<T> onNext)
+    public void RegisterHandler(Func<T, Task> onNext)
     {
         ArgumentNullException.ThrowIfNull(onNext);
-        Start(HandleAsync);
+        Start(onNext);
+    }
 
-        async Task HandleAsync(T item)
+    public async Task SendAsync(T item, CancellationToken cancellationToken = default)
+    {
+        var queuedMessage = CreateQueuedMessage(item);
+        Interlocked.Increment(ref _queuedMessages);
+        try
         {
-            onNext(item);
-            await Task.CompletedTask;
+            await _queue.Writer.WriteAsync(queuedMessage, cancellationToken).ConfigureAwait(false);
         }
-    }
-
-    public void RegisterHandler<TReturn>(Func<T, TReturn> onNext)
-    {
-        ArgumentNullException.ThrowIfNull(onNext);
-        Start(HandleAsync);
-
-        async Task HandleAsync(T item)
+        catch
         {
-            var result = onNext(item);
-            if (result is Task task)
-            {
-                await task.ConfigureAwait(false);
-            }
+            Interlocked.Decrement(ref _queuedMessages);
+            throw;
         }
+
+        RecordPublished(queuedMessage);
     }
 
-    public void Send(T item)
+    public ValueTask<bool> TrySendAsync(T item)
     {
-        _queue.Add(CreateQueuedMessage(item));
-    }
+        var queuedMessage = CreateQueuedMessage(item);
+        Interlocked.Increment(ref _queuedMessages);
+        if (!_queue.Writer.TryWrite(queuedMessage))
+        {
+            Interlocked.Decrement(ref _queuedMessages);
+            return ValueTask.FromResult(false);
+        }
 
-    public Task SendAsync(T item, CancellationToken cancellationToken = default)
-    {
-        return Task.Run(() => _queue.Add(CreateQueuedMessage(item), cancellationToken), cancellationToken);
+        RecordPublished(queuedMessage);
+        return ValueTask.FromResult(true);
     }
 
     public VineQueueMetrics GetMetrics()
     {
         return new VineQueueMetrics(
-            _queue.Count,
+            (int)Math.Max(0, Interlocked.Read(ref _queuedMessages)),
             Interlocked.Read(ref _publishedMessages),
             Interlocked.Read(ref _successfulMessages),
             Interlocked.Read(ref _failedMessages),
@@ -125,7 +132,7 @@ public class VineWorkQueue<T> : IVineWorkQueue<T>, IDisposable
 
     public void Complete()
     {
-        _queue.CompleteAdding();
+        _queue.Writer.TryComplete();
     }
 
     public async Task StopAsync(CancellationToken cancellationToken = default)
@@ -154,7 +161,6 @@ public class VineWorkQueue<T> : IVineWorkQueue<T>, IDisposable
     {
         StopAsync().GetAwaiter().GetResult();
         _stopCts.Dispose();
-        _queue.Dispose();
     }
 
     private void Start(Func<T, Task> handler)
@@ -178,8 +184,9 @@ public class VineWorkQueue<T> : IVineWorkQueue<T>, IDisposable
     {
         try
         {
-            foreach (var item in _queue.GetConsumingEnumerable(_stopCts.Token))
+            await foreach (var item in _queue.Reader.ReadAllAsync(_stopCts.Token).ConfigureAwait(false))
             {
+                Interlocked.Decrement(ref _queuedMessages);
                 await ProcessAsync(item, handler).ConfigureAwait(false);
             }
         }
@@ -235,11 +242,14 @@ public class VineWorkQueue<T> : IVineWorkQueue<T>, IDisposable
 
     private QueuedMessage CreateQueuedMessage(T item)
     {
+        return new QueuedMessage(item, Stopwatch.GetTimestamp());
+    }
+
+    private void RecordPublished(QueuedMessage queuedMessage)
+    {
         Interlocked.Increment(ref _publishedMessages);
         _publishedCounter.Add(1);
-        var queuedMessage = new QueuedMessage(item, Stopwatch.GetTimestamp());
-        RaiseEvent(new VineQueueEvent<T>(VineQueueEventKind.Published, Name, item, 0, null, TimeSpan.Zero));
-        return queuedMessage;
+        RaiseEvent(new VineQueueEvent<T>(VineQueueEventKind.Published, Name, queuedMessage.Message, 0, null, TimeSpan.Zero));
     }
 
     private TimeSpan AddConsumptionLatency(long enqueuedAt)

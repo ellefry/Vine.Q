@@ -23,7 +23,7 @@ public sealed class VineWorkQueueTests
         {
             await Task.Delay(25);
         });
-        queue.Send(1);
+        await queue.SendAsync(1);
 
         await completed.Task.WaitAsync(TimeSpan.FromSeconds(2));
 
@@ -47,12 +47,12 @@ public sealed class VineWorkQueueTests
             }
         });
 
-        queue.RegisterHandler<int>(_ =>
+        queue.RegisterHandler(_ =>
         {
             Interlocked.Increment(ref attempts);
             throw new InvalidOperationException("test failure");
         });
-        queue.Send(1);
+        await queue.SendAsync(1);
 
         var failure = await failed.Task.WaitAsync(TimeSpan.FromSeconds(2));
 
@@ -87,9 +87,9 @@ public sealed class VineWorkQueueTests
             Interlocked.Decrement(ref active);
         });
 
-        queue.Send(1);
-        queue.Send(2);
-        queue.Send(3);
+        await queue.SendAsync(1);
+        await queue.SendAsync(2);
+        await queue.SendAsync(3);
         await completed.Task.WaitAsync(TimeSpan.FromSeconds(2));
 
         Assert.Equal(1, maximumActive);
@@ -100,8 +100,12 @@ public sealed class VineWorkQueueTests
     {
         var completed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         using var queue = new VineWorkQueue<int>("test", 10);
-        queue.RegisterHandler(_ => completed.TrySetResult());
-        queue.Send(1);
+        queue.RegisterHandler(async _ =>
+        {
+            completed.TrySetResult();
+            await Task.CompletedTask;
+        });
+        await queue.SendAsync(1);
 
         await queue.StopAsync();
 

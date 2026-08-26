@@ -13,33 +13,20 @@ public class VineQueuePublisher : IVineQueuePublisher
         _queueAcquirer = queueAcquirer;
     }
 
-    public void Publish<T>(T message, string queue = Constants.DEFAULT_QUEUE)
-    {
-        GetRequiredQueue<T>(queue).Send(message);
-    }
-
     public Task PublishAsync<T>(T message, string queue = Constants.DEFAULT_QUEUE, CancellationToken cancellationToken = default)
     {
         return GetRequiredQueue<T>(queue).SendAsync(message, cancellationToken);
     }
 
-    public bool TryPublish<T>(T message, string queue = Constants.DEFAULT_QUEUE)
+    public ValueTask<bool> TryPublishAsync<T>(T message, string queue = Constants.DEFAULT_QUEUE)
     {
         var workQueue = _queueAcquirer.GetWorkQueue<T>(queue);
         if (workQueue is null)
         {
-            return false;
+            return ValueTask.FromResult(false);
         }
 
-        try
-        {
-            workQueue.Send(message);
-            return true;
-        }
-        catch (InvalidOperationException)
-        {
-            return false;
-        }
+        return workQueue.TrySendAsync(message);
     }
 
     private IVineWorkQueue<T> GetRequiredQueue<T>(string queue)

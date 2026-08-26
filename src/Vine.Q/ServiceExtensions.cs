@@ -53,56 +53,6 @@ public static class ServiceExtensions
         return services;
     }
 
-    /// <summary>
-    /// Add default queue name equals local and capacity equals DEFAULT_CAPACITY(2000) and the handler with TReturn type
-    /// </summary>
-    /// <typeparam name="T">Message type, parameter of a handler</typeparam>
-    /// <typeparam name="TReturn">Return type, return type of a handler</typeparam>
-    /// <typeparam name="THandler">Implementation of a handler</typeparam>
-    /// <param name="queue">Queue name</param>
-    /// <param name="capacity">Queue capacity</param>
-    /// <returns>IServiceCollection</returns>
-    public static IServiceCollection AddDefaultVineQueueWithReturn<T, TReturn, THandler>(this IServiceCollection services, VineQueueOptions<T>? options = null)
-        where THandler : class, IVineQueueHandlerWithReturn<T, TReturn>
-    {
-        services.AddVineQueueWithReturn<T, TReturn, THandler>(Constants.DEFAULT_QUEUE, Constants.DEFAULT_QUEUE_SIZE, options);
-        return services;
-    }
-
-    /// <summary>
-    /// Add Vine queue
-    /// </summary>
-    /// <typeparam name="T">Message type, parameter of a handler</typeparam>
-    /// <typeparam name="TReturn">Return type, return type of a handler</typeparam>
-    /// <typeparam name="THandler">Implementation of a handler</typeparam>
-    /// <param name="queue">Queue name</param>
-    /// <param name="capacity">Queue capacity</param>
-    /// <returns>IServiceCollection</returns>
-    public static IServiceCollection AddVineQueueWithReturn<T, TReturn, THandler>(this IServiceCollection services, string queue, int capacity, VineQueueOptions<T>? options = null)
-        where THandler : class, IVineQueueHandlerWithReturn<T, TReturn>
-    {
-        ValidateAndRegisterQueue<T>(services, queue, capacity);
-        services.AddCommons();
-#if NET8_0_OR_GREATER
-        services.TryAddKeyedSingleton<IVineQueueHandlerWithReturn<T, TReturn>, THandler>(queue);
-#else
-        services.AddSingleton<THandler>();
-#endif
-        services.AddSingleton(sp =>
-        {
-            var builder = sp.GetRequiredService<IVineQueueBuilder>();
-#if NET8_0_OR_GREATER
-            var handler = sp.GetRequiredKeyedService<IVineQueueHandlerWithReturn<T, TReturn>>(queue);
-#else
-            var handler = sp.GetRequiredService<THandler>() as IVineQueueHandlerWithReturn<T, TReturn>;
-#endif
-            var q = builder.Create<T, TReturn>(queue, capacity, options ?? new VineQueueOptions<T>(), handler.Handle);
-            return q;
-        });
-
-        return services;
-    }
-
     private static void AddCommons(this IServiceCollection services)
     {
         services.TryAddSingleton<IVineQueueBuilder, VineQueueBuilder>();
