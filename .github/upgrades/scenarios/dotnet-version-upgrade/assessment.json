@@ -1,0 +1,472 @@
+{
+  "settings": {
+    "components": {
+      "code": true,
+      "binaries": false
+    },
+    "targetId": "net10.0",
+    "targetDisplayName": ".NETCoreApp,Version=v10.0"
+  },
+  "analysisStartTime": "2026-08-31T01:46:21.1517411Z",
+  "analysisEndTime": "2026-08-31T01:46:21.3417512Z",
+  "privacyModeHelpUrl": "https://go.microsoft.com/fwlink/?linkid=2270980",
+  "stats": {
+    "summary": {
+      "projects": 3,
+      "issues": 4,
+      "incidents": 11,
+      "effort": 11
+    },
+    "charts": {
+      "severity": {
+        "Mandatory": 3,
+        "Optional": 1,
+        "Potential": 7,
+        "Information": 0
+      },
+      "category": {
+        "NuGet": 3,
+        "Project": 3,
+        "Api": 5
+      }
+    }
+  },
+  "projects": [
+    {
+      "path": "src\\Sample.App\\Sample.App.csproj",
+      "startingProject": true,
+      "issues": 1,
+      "storyPoints": 1,
+      "properties": {
+        "appName": "Sample.App",
+        "projectKind": "DotNetCoreApp",
+        "frameworks": [
+          "net8.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 1,
+        "numberOfCodeFiles": 1,
+        "linesTotal": 73,
+        "linesOfCode": 73,
+        "totalApiScanned": 72,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "6e2cf333-e137-4c41-be17-07cfbd67e6ca",
+          "ruleId": "Project.0002",
+          "projectPath": "src\\Sample.App\\Sample.App.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net8.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net8.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "src\\Sample.App\\Sample.App.csproj",
+            "snippet": "Current target framework: net8.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net8.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net8.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "src\\Vine.Q\\Vine.Q.csproj",
+      "startingProject": true,
+      "issues": 3,
+      "storyPoints": 4,
+      "properties": {
+        "appName": "Vine.Q",
+        "projectKind": "ClassLibrary",
+        "frameworks": [
+          "net8.0",
+          "net6.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 12,
+        "numberOfCodeFiles": 12,
+        "linesTotal": 624,
+        "linesOfCode": 624,
+        "totalApiScanned": 655,
+        "minLinesOfCodeToChange": 1,
+        "maxLinesOfCodeToChange": 1
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "57466c2e-8151-4db9-a540-28e4a89b5313",
+          "ruleId": "NuGet.0002",
+          "projectPath": "src\\Vine.Q\\Vine.Q.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.DependencyInjection, 6.0.1\n\nRecommendation:\n\nRemove Microsoft.Extensions.DependencyInjection, and replace with new package Microsoft.Extensions.DependencyInjection 10.0.11",
+              "protected": "Microsoft.Extensions.DependencyInjection, 6.0.1\n\nRecommendation:\n\nRemove Microsoft.Extensions.DependencyInjection, and replace with new package Microsoft.Extensions.DependencyInjection 10.0.11"
+            },
+            "kind": "File",
+            "path": "src\\Vine.Q\\Vine.Q.csproj",
+            "snippet": "Microsoft.Extensions.DependencyInjection, 6.0.1\n\nRecommendation:\n\nRemove Microsoft.Extensions.DependencyInjection, and replace with new package Microsoft.Extensions.DependencyInjection 10.0.11",
+            "protectedSnippet": "Microsoft.Extensions.DependencyInjection, 6.0.1\n\nRecommendation:\n\nRemove Microsoft.Extensions.DependencyInjection, and replace with new package Microsoft.Extensions.DependencyInjection 10.0.11",
+            "label": "Microsoft.Extensions.DependencyInjection 6.0.1",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.DependencyInjection",
+              "PackageVersion": "6.0.1",
+              "PackageNewVersion": "10.0.11",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "15d688c0-f9ae-4769-8f28-6a05ec1586a0",
+          "ruleId": "NuGet.0002",
+          "projectPath": "src\\Vine.Q\\Vine.Q.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.DependencyInjection.Abstractions, 6.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.DependencyInjection.Abstractions, and replace with new package Microsoft.Extensions.DependencyInjection.Abstractions 10.0.11",
+              "protected": "Microsoft.Extensions.DependencyInjection.Abstractions, 6.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.DependencyInjection.Abstractions, and replace with new package Microsoft.Extensions.DependencyInjection.Abstractions 10.0.11"
+            },
+            "kind": "File",
+            "path": "src\\Vine.Q\\Vine.Q.csproj",
+            "snippet": "Microsoft.Extensions.DependencyInjection.Abstractions, 6.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.DependencyInjection.Abstractions, and replace with new package Microsoft.Extensions.DependencyInjection.Abstractions 10.0.11",
+            "protectedSnippet": "Microsoft.Extensions.DependencyInjection.Abstractions, 6.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.DependencyInjection.Abstractions, and replace with new package Microsoft.Extensions.DependencyInjection.Abstractions 10.0.11",
+            "label": "Microsoft.Extensions.DependencyInjection.Abstractions 6.0.0",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.DependencyInjection.Abstractions",
+              "PackageVersion": "6.0.0",
+              "PackageNewVersion": "10.0.11",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "689b6781-8070-4766-b46c-deb7202f0835",
+          "ruleId": "Project.0002",
+          "projectPath": "src\\Vine.Q\\Vine.Q.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net8.0;net6.0\nRecommended target framework: net8.0;net6.0;net10.0",
+              "protected": "Current target framework: net8.0;net6.0\nRecommended target framework: net8.0;net6.0;net10.0"
+            },
+            "kind": "File",
+            "path": "src\\Vine.Q\\Vine.Q.csproj",
+            "snippet": "Current target framework: net8.0;net6.0\nRecommended target framework: net8.0;net6.0;net10.0",
+            "protectedSnippet": "Current target framework: net8.0;net6.0\nRecommended target framework: net8.0;net6.0;net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net8.0;net6.0",
+              "RecommendedTargetFramework": "net8.0;net6.0;net10.0"
+            }
+          }
+        },
+        {
+          "incidentId": "965ed011-746a-4b03-adb7-4a9fc2c40063",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "src\\Vine.Q\\Vine.Q.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "return TimeSpan.FromSeconds((double)ticks / Stopwatch.Frequency);",
+              "protected": "M:System.TimeSpan.FromSeconds(System.Double)"
+            },
+            "kind": "File",
+            "path": "src\\Vine.Q\\VineWorkQueue.cs",
+            "snippet": "return TimeSpan.FromSeconds((double)ticks / Stopwatch.Frequency);",
+            "protectedSnippet": "M:System.TimeSpan.FromSeconds(System.Double)",
+            "label": "M:System.TimeSpan.FromSeconds(System.Double)",
+            "properties": {
+              "CharCount": "9982"
+            },
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 264,
+            "column": 8
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "tests\\Vine.Q.Tests\\Vine.Q.Tests.csproj",
+      "startingProject": true,
+      "issues": 3,
+      "storyPoints": 6,
+      "properties": {
+        "appName": "Vine.Q.Tests",
+        "projectKind": "DotNetCoreApp",
+        "frameworks": [
+          "net8.0",
+          "net6.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 3,
+        "numberOfCodeFiles": 1,
+        "linesTotal": 1918,
+        "linesOfCode": 130,
+        "totalApiScanned": 137,
+        "minLinesOfCodeToChange": 4,
+        "maxLinesOfCodeToChange": 4
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "29296ae7-fef9-4812-9048-5be21d563da9",
+          "ruleId": "NuGet.0005",
+          "projectPath": "tests\\Vine.Q.Tests\\Vine.Q.Tests.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "xunit, 2.9.2\n\nRecommendation:\n\nThis package will only be updated for security issues. All future feature work has moved onto v3.\n\nGuide for migrating from xUnit.net v2 to v3: https://xunit.net/docs/getting-started/v3/migration\nRemove xunit, and replace with new package xunit, 2.9.3",
+              "protected": "xunit, 2.9.2\n\nRecommendation:\n\nThis package will only be updated for security issues. All future feature work has moved onto v3.\n\nGuide for migrating from xUnit.net v2 to v3: https://xunit.net/docs/getting-started/v3/migration\nRemove xunit, and replace with new package xunit, 2.9.3"
+            },
+            "kind": "File",
+            "path": "tests\\Vine.Q.Tests\\Vine.Q.Tests.csproj",
+            "snippet": "xunit, 2.9.2\n\nRecommendation:\n\nThis package will only be updated for security issues. All future feature work has moved onto v3.\n\nGuide for migrating from xUnit.net v2 to v3: https://xunit.net/docs/getting-started/v3/migration\nRemove xunit, and replace with new package xunit, 2.9.3",
+            "protectedSnippet": "xunit, 2.9.2\n\nRecommendation:\n\nThis package will only be updated for security issues. All future feature work has moved onto v3.\n\nGuide for migrating from xUnit.net v2 to v3: https://xunit.net/docs/getting-started/v3/migration\nRemove xunit, and replace with new package xunit, 2.9.3",
+            "label": "xunit 2.9.2",
+            "properties": {
+              "PackageId": "xunit",
+              "PackageVersion": "2.9.2",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "0d02057c-373e-4ce3-b8d4-41aba4f10d17",
+          "ruleId": "Project.0002",
+          "projectPath": "tests\\Vine.Q.Tests\\Vine.Q.Tests.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net8.0;net6.0\nRecommended target framework: net8.0;net6.0;net10.0",
+              "protected": "Current target framework: net8.0;net6.0\nRecommended target framework: net8.0;net6.0;net10.0"
+            },
+            "kind": "File",
+            "path": "tests\\Vine.Q.Tests\\Vine.Q.Tests.csproj",
+            "snippet": "Current target framework: net8.0;net6.0\nRecommended target framework: net8.0;net6.0;net10.0",
+            "protectedSnippet": "Current target framework: net8.0;net6.0\nRecommended target framework: net8.0;net6.0;net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net8.0;net6.0",
+              "RecommendedTargetFramework": "net8.0;net6.0;net10.0"
+            }
+          }
+        },
+        {
+          "incidentId": "5bb151da-90a0-4dca-ac15-2c5649b25021",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "tests\\Vine.Q.Tests\\Vine.Q.Tests.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "await completed.Task.WaitAsync(TimeSpan.FromSeconds(2));",
+              "protected": "M:System.TimeSpan.FromSeconds(System.Double)"
+            },
+            "kind": "File",
+            "path": "tests\\Vine.Q.Tests\\VineWorkQueueTests.cs",
+            "snippet": "await completed.Task.WaitAsync(TimeSpan.FromSeconds(2));",
+            "protectedSnippet": "M:System.TimeSpan.FromSeconds(System.Double)",
+            "label": "M:System.TimeSpan.FromSeconds(System.Double)",
+            "properties": {
+              "CharCount": "4205"
+            },
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 111,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "51cb75b4-3544-4b2b-b7a1-d4ef287b9cec",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "tests\\Vine.Q.Tests\\Vine.Q.Tests.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "await completed.Task.WaitAsync(TimeSpan.FromSeconds(2));",
+              "protected": "M:System.TimeSpan.FromSeconds(System.Double)"
+            },
+            "kind": "File",
+            "path": "tests\\Vine.Q.Tests\\VineWorkQueueTests.cs",
+            "snippet": "await completed.Task.WaitAsync(TimeSpan.FromSeconds(2));",
+            "protectedSnippet": "M:System.TimeSpan.FromSeconds(System.Double)",
+            "label": "M:System.TimeSpan.FromSeconds(System.Double)",
+            "properties": {
+              "CharCount": "4205"
+            },
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 92,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "d6aa7ab3-11f3-406e-af7a-86ece7a7c3fe",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "tests\\Vine.Q.Tests\\Vine.Q.Tests.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var failure = await failed.Task.WaitAsync(TimeSpan.FromSeconds(2));",
+              "protected": "M:System.TimeSpan.FromSeconds(System.Double)"
+            },
+            "kind": "File",
+            "path": "tests\\Vine.Q.Tests\\VineWorkQueueTests.cs",
+            "snippet": "var failure = await failed.Task.WaitAsync(TimeSpan.FromSeconds(2));",
+            "protectedSnippet": "M:System.TimeSpan.FromSeconds(System.Double)",
+            "label": "M:System.TimeSpan.FromSeconds(System.Double)",
+            "properties": {
+              "CharCount": "4205"
+            },
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 56,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "7f36cb0b-5f53-4a5a-9587-561220dbdebd",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "tests\\Vine.Q.Tests\\Vine.Q.Tests.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "await completed.Task.WaitAsync(TimeSpan.FromSeconds(2));",
+              "protected": "M:System.TimeSpan.FromSeconds(System.Double)"
+            },
+            "kind": "File",
+            "path": "tests\\Vine.Q.Tests\\VineWorkQueueTests.cs",
+            "snippet": "await completed.Task.WaitAsync(TimeSpan.FromSeconds(2));",
+            "protectedSnippet": "M:System.TimeSpan.FromSeconds(System.Double)",
+            "label": "M:System.TimeSpan.FromSeconds(System.Double)",
+            "properties": {
+              "CharCount": "4205"
+            },
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 27,
+            "column": 8
+          }
+        }
+      ],
+      "features": []
+    }
+  ],
+  "rules": {
+    "NuGet.0002": {
+      "id": "NuGet.0002",
+      "isFeature": false,
+      "description": "NuGet package upgrade is recommended for selected target framework.\n\nStandard .NET packages are recommended to have versions matching version of .NET that project targets.\n\nSome other packages also are known to work better for selected target frameworks.",
+      "label": "NuGet package upgrade is recommended",
+      "severity": "Potential",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262530",
+          "isCustom": false
+        }
+      ]
+    },
+    "Project.0002": {
+      "id": "Project.0002",
+      "isFeature": false,
+      "description": "Project\u0027s target framework(s) needs to be changed to the new target framework that you selected for this upgrade.\n\nDuring upgrade target framework will be adjusted to corresponding platform when applicable. In some cases project would result in multiple target frameworks after the upgrade if it was using features that now have their own platforms in modern .NET frameworks (windows, iOS, Android etc).",
+      "label": "Project\u0027s target framework(s) needs to be changed",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Overview of porting from .NET Framework to .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265227",
+          "isCustom": false
+        },
+        {
+          "title": ".NET project SDKs",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265226",
+          "isCustom": false
+        }
+      ]
+    },
+    "Api.0002": {
+      "id": "Api.0002",
+      "isFeature": false,
+      "description": "API is source incompatible for selected .NET version: requires code changes to compile successfully when targeting a new version, such as removing obsolete APIs or changing method signatures.",
+      "label": "Source incompatible for selected .NET version",
+      "severity": "Potential",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Breaking changes in .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262679",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0005": {
+      "id": "NuGet.0005",
+      "isFeature": false,
+      "description": "NuGet package is deprecated.\n\nGo to its documentation and if there is a guidance for replacement of functionality provided by this package.",
+      "label": "NuGet package is deprecated",
+      "severity": "Optional",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262531",
+          "isCustom": false
+        }
+      ]
+    }
+  }
+}
