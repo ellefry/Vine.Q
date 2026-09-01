@@ -37,12 +37,12 @@ internal static class Program
     var publisher = serviceProvider.GetRequiredService<IVineQueuePublisher>();
 
     var publishTasks = Enumerable.Range(1, messagesPerQueue).Select(async idx =>
-{
-  await publisher.PublishAsync(new Message { Id = idx.ToString() });
-  await publisher.PublishAsync(new Message { Id = idx.ToString() }, "local2");
-  await publisher.PublishAsync(new Message { Id = idx.ToString() }, "local3");
-  await publisher.PublishAsync(new Message { Id = idx.ToString() }, "local4");
-});
+    {
+      await publisher.PublishAsync(new Message { Id = idx.ToString() });
+      await publisher.PublishAsync(new Message { Id = idx.ToString() }, "local2");
+      await publisher.PublishAsync(new Message { Id = idx.ToString() }, "local3");
+      await publisher.PublishAsync(new Message { Id = idx.ToString() }, "local4");
+    });
 
     await Task.WhenAll(publishTasks);
     await allMessagesConsumed.Task.WaitAsync(TimeSpan.FromSeconds(30));
