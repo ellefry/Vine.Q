@@ -45,7 +45,7 @@ internal static class Program
 });
 
     await Task.WhenAll(publishTasks);
-    await allMessagesConsumed.Task.WaitAsync(TimeSpan.FromSeconds(5));
+    await allMessagesConsumed.Task.WaitAsync(TimeSpan.FromSeconds(30));
     Console.WriteLine($"Consumed messages: {consumedMessages}");
   }
 }
@@ -60,6 +60,7 @@ public class MessageHandler : IVineQueueHandler<Message>
 {
   public async Task Handle(Message message)
   {
+    await Task.Delay(1000);
     await Console.Out.WriteLineAsync($"[1] Consume message : {message.Id}");
   }
 }
