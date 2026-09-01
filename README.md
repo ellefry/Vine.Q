@@ -1,51 +1,213 @@
-[![Static Badge](https://img.shields.io/badge/nuget-1.0.1-blue)](https://www.nuget.org/packages/Vine.Q/)
-# Vine.Q
-## A Lightweight Message Queue
-Vine.Q is an implementation of a lightweight memory message queue in C#. It serves as an efficient and easy-to-use mechanism for managing and processing queued data within a C# application. This queue implementation is designed to be lightweight, making it suitable for scenarios where a simple and fast in-memory queue is needed. Vine.Q enables developers to seamlessly handle and organize data in a first-in, first-out (FIFO) fashion, providing a reliable solution for various queuing requirements within C# applications.
+[![Static Badge](https://img.shields.io/badge/nuget-2.0.0-blue)](https://www.nuget.org/packages/Vine.Q/)
+[![NuGet](https://img.shields.io/nuget/v/Vine.Q.svg)](https://www.nuget.org/packages/Vine.Q/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/Vine.Q.svg)](https://www.nuget.org/packages/Vine.Q/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ellefry/Vine.Q/blob/main/LICENSE)
 
-## How To Use
-* Define message handler
+# Vine.Q
+
+Vine.Q is a lightweight, high-performance in-memory message queue for C# applications.
+
+It is designed for asynchronous message processing within a single process.
+
+## Features
+
+- In-memory FIFO message queue
+- Support for multiple independent queues
+- Asynchronous message handling
+- Configurable queue capacity
+- Configurable maximum concurrency
+- Failure retry support
+- Configurable retry delay
+- Message processing event callbacks
+- Supports .NET 10
+
+> Vine.Q is intended for single-process scenarios. It does not provide cross-process messaging or message persistence.
+
+## Installation
+
+```bash
+dotnet add package Vine.Q
 ```
-public class Message
+
+## Quick Start
+
+### 1. Define a message and handler
+
+```csharp
+using Vine.Q;
+
+public sealed class Message
 {
     public string? Id { get; set; }
 }
 
-public class MessageHandler : IVineQueueHandlerWithReturn<Message, Task>
+public sealed class MessageHandler : IVineQueueHandler<Message>
 {
     public async Task Handle(Message message)
     {
-        Console.WriteLine($"Consumed message : {message.Id}");
+        Console.WriteLine($"Consumed message: {message.Id}");
         await Task.CompletedTask;
     }
 }
 ```
-> if the handler has no return, use IVineQueueHandler\<T\>
 
-* Add services
-```
-services.AddVineQueueWithReturn<Message, Task, MessageHandler>("local", 5_000);
-```
-> **local** means queue name and **5_000** mean queue size
+### 2. Register a queue
 
-* Inject publish service
-```
-private readonly IVineQueuePublisher _publisher
+```csharp
+using Microsoft.Extensions.DependencyInjection;
+using Vine.Q;
 
-public Constructor(IVineQueuePublisher publisher)
+var services = new ServiceCollection();
+
+services.AddVineQueue<Message, MessageHandler>(
+    queue: "local",
+    capacity: 5_000);
+
+using var serviceProvider = services.BuildServiceProvider();
+```
+
+`queue` specifies the queue name, and `capacity` specifies the maximum number of messages that the queue can hold.
+
+You can also register the default queue:
+
+```csharp
+services.AddDefaultVineQueue<Message, MessageHandler>();
+```
+
+The default queue configuration is:
+
+- Queue name: `local`
+- Queue capacity: `2_000`
+
+### 3. Publish a message
+
+```csharp
+var publisher = serviceProvider.GetRequiredService<IVineQueuePublisher>();
+
+await publisher.PublishAsync(
+    new Message { Id = "demo" },
+    queue: "local");
+```
+
+When using the default queue, the queue name can be omitted:
+
+```csharp
+await publisher.PublishAsync(new Message { Id = "demo" });
+```
+
+### 4. Try to publish a message
+
+`TryPublishAsync` returns a Boolean value indicating whether the message was successfully added to the queue:
+
+```csharp
+var published = await publisher.TryPublishAsync(
+    new Message { Id = "demo" },
+    queue: "local");
+
+if (!published)
 {
-    _publisher = publisher;
-    ...
-}
-
-public async Task PublishMessage()
-{
-    ...
-    _publisher.Publish(new Message { Id = "demo" }, "local");
-    ...
+    Console.WriteLine("The queue is full.");
 }
 ```
-## Limitations
-* MessageHandler will be registered as singleton service
-* 1 queue 1 handler
-* Do not make your queue size too big, e.g. int.MaxValue
+
+## Configure Queue Options
+
+Use `VineQueueOptions<T>` to configure concurrency, retries, retry delays, and event callbacks:
+
+```csharp
+var options = new VineQueueOptions<Message>
+{
+    MaxConcurrency = 4,
+    MaxRetryCount = 3,
+    RetryDelay = TimeSpan.FromSeconds(1),
+    OnFailureAsync = context =>
+    {
+        Console.WriteLine(
+            $"Message failed on attempt {context.Attempt}: " +
+            $"{context.Exception.Message}");
+
+        return Task.CompletedTask;
+    },
+    OnEvent = queueEvent =>
+    {
+        Console.WriteLine($"Queue event: {queueEvent.Kind}");
+    }
+};
+
+services.AddVineQueue<Message, MessageHandler>(
+    queue: "local",
+    capacity: 5_000,
+    options);
+```
+
+## Register Multiple Queues
+
+Each queue can have its own message type and handler:
+
+```csharp
+services.AddVineQueue<Message, MessageHandler>(
+    queue: "messages",
+    capacity: 1_000);
+
+services.AddVineQueue<Notification, NotificationHandler>(
+    queue: "notifications",
+    capacity: 500);
+```
+
+Publish to a specific queue:
+
+```csharp
+await publisher.PublishAsync(
+    new Notification { Text = "Hello" },
+    queue: "notifications");
+```
+
+## API
+
+### `IVineQueuePublisher`
+
+```csharp
+public interface IVineQueuePublisher
+{
+    Task PublishAsync<T>(
+        T message,
+        string queue = "local",
+        CancellationToken cancellationToken = default);
+
+    ValueTask<bool> TryPublishAsync<T>(
+        T message,
+        string queue = "local");
+}
+```
+
+### `IVineQueueHandler<T>`
+
+```csharp
+public interface IVineQueueHandler<T>
+{
+    Task Handle(T message);
+}
+```
+
+## Important Notes
+
+- Queues and messages are stored only in the current process memory.
+- Unprocessed messages are lost when the application stops or restarts.
+- Each queue can have only one registered message handler.
+- Message handlers are registered as keyed singletons.
+- Queue names cannot be null, empty, or whitespace.
+- Queue capacity must be greater than `0`.
+- Avoid using excessively large queue capacities, such as `int.MaxValue`.
+- For reliable delivery, persistence, or cross-process communication, consider using RabbitMQ, Azure Service Bus, or another external messaging system.
+
+## Sample Project
+
+A sample application is available at:
+
+```text
+src/Sample.App
+```
+
+## License
+
+This project is licensed under the MIT License.

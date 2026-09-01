@@ -33,19 +33,12 @@ public static class ServiceExtensions
   {
     ValidateAndRegisterQueue<T>(services, queue, capacity);
     services.AddCommons();
-#if NET8_0_OR_GREATER
     services.TryAddKeyedSingleton<IVineQueueHandler<T>, THandler>(queue);
-#else
-        services.AddSingleton<THandler>();
-#endif
+
     services.AddSingleton(sp =>
     {
       var builder = sp.GetRequiredService<IVineQueueBuilder>();
-#if NET8_0_OR_GREATER
       var handler = sp.GetRequiredKeyedService<IVineQueueHandler<T>>(queue);
-#else
-            var handler = sp.GetRequiredService<THandler>() as IVineQueueHandler<T>;
-#endif
       var q = builder.Create<T>(queue, capacity, options ?? new VineQueueOptions<T>(), handler.Handle);
       return q;
     });
