@@ -1,4 +1,4 @@
-[![Static Badge](https://img.shields.io/badge/nuget-1.0.1-blue)](https://www.nuget.org/packages/Vine.Q/)
+[![Static Badge](https://img.shields.io/badge/nuget-2.0.0-blue)](https://www.nuget.org/packages/Vine.Q/)
 [![NuGet](https://img.shields.io/nuget/v/Vine.Q.svg)](https://www.nuget.org/packages/Vine.Q/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/Vine.Q.svg)](https://www.nuget.org/packages/Vine.Q/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ellefry/Vine.Q/blob/main/LICENSE)
@@ -19,7 +19,6 @@ It is designed for asynchronous message processing within a single process.
 - Failure retry support
 - Configurable retry delay
 - Message processing event callbacks
-- Integration with `Microsoft.Extensions.DependencyInjection`
 - Supports .NET 10
 
 > Vine.Q is intended for single-process scenarios. It does not provide cross-process messaging or message persistence.
